@@ -4,7 +4,7 @@ angular.module('buszit.view1', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/sf-muni', {
-    templateUrl: 'views/mapview.html',
+    templateUrl: 'views/mapView.html',
     controller: 'MapViewCtrl'
   });
 }])
