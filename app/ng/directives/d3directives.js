@@ -112,7 +112,7 @@ angular.module('buszit.directives', ['d3'])
 
                                 scope.loc = {
                                     lat: lat,
-                                    lng: lng
+                                    lng: -lng
                                 };
 
                                 scope.$apply();
@@ -131,6 +131,12 @@ angular.module('buszit.directives', ['d3'])
                             albersProjection.rotate([newLoc.lng])
                                 .center([0, newLoc.lat]);
                             scope.reRender(attrs.zoom * attrs.scale);
+                            geoService.setMeMapPoint(
+                                [-1 * scope.loc.lng, scope.loc.lat],
+                                svg,
+                                albersProjection
+                            );
+                            scope.refreshSvg();
                         });
 
                         // Apply watch on window resize
