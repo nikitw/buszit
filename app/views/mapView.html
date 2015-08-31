@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="dropdown">
+        <div ng-repeat="route in routes">
+            <span class="tag {{route._selected ? 'selected-tag' : ''}}">
+                <a href="#/sf-muni" ng-click="toggleTag(route)">{{route._tag}}</a>
+            </span>
+        </div>
+    </div>
+    <div d3-map zoom='{{zoom}}' zoom-ctrl="true" scale="{{scale}}" class="map-ground">
+        <!--A control will be appended when the map gets rendered-->
+        <!--<div class="map-zoom emphasize">-->
+            <!--<input type="range" name="points" min="100" max="5000" ng-model="scale"/>-->
+        <!--</div>-->
+    </div>
+</div>

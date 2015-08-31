@@ -1,0 +1,142 @@
+/* app css stylesheet */
+
+.menu {
+  list-style: none;
+  border-bottom: 0.1em solid black;
+  margin-bottom: 2em;
+  padding: 0 0 0.5em;
+}
+
+.menu:before {
+  content: "[";
+}
+
+.menu:after {
+  content: "]";
+}
+
+.menu > li {
+  display: inline;
+}
+
+.menu > li:before {
+  content: " ";
+  padding-right: 0.3em;
+}
+
+.menu > li:nth-child(1):before {
+  content: "";
+  padding: 0;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: auto;
+    overflow: hidden;
+}
+
+.dropdown {
+    padding-top: 10px;
+    height: 33px;
+    overflow-y: hidden;
+    border: 1px solid #ccc;
+    position: absolute;
+    z-index: 1000;
+    -webkit-transition: height 2s, background 3s; /* For Safari 3.1 to 6.0 */
+    transition: height 2s, background 3s;
+}
+
+.dropdown > div {
+    float: left;
+    padding: 3px 2px;
+    margin: 2px;
+}
+
+.tag:hover {
+    opacity:1;
+    background-color: #5ad08d;
+}
+
+.selected-tag:hover {
+    background-color: #006dcc;
+}
+
+.dropdown:hover {
+    height: 150px;
+    overflow-y: auto;
+    background-color: #f5f5f5;
+}
+
+.tag {
+    opacity: 0.4;
+    background-color: #333333;
+    border-radius: 3px;
+    padding: 5px;
+    -webkit-transition: opacity 2s; /* For Safari 3.1 to 6.0 */
+    transition: opacity 0.5s;
+}
+
+.selected-tag {
+    opacity: 1;
+    background-color: #006dcc;
+}
+
+.tag > a {
+    color: #ececec;
+    text-decoration: none;
+}
+
+.map-ground {
+    border: 1px solid #ccc;
+    background-color: #CFE8EF;
+    cursor: crosshair;
+    height: 100%;
+}
+
+.map-ground > svg > g {
+    cursor: -webkit-grab;
+}
+
+.map-ground > svg > g:active {
+    cursor: -webkit-grabbing;
+}
+
+div.map-zoom {
+    position: absolute;
+    bottom: 25px;
+    left: 25px;
+    border-radius: 15px;
+    z-index: 500;
+}
+
+div.emphasize:hover {
+    opacity: 0.8;
+}
+
+div.map-zoom > input:hover {
+    cursor: pointer;
+}
+
+#me {
+    fill: #0040D0;
+}
+
+div.foot-note {
+    position:absolute;
+    bottom:0;
+    right:0;
+    color:#f5f5f5;
+    z-index: 0;
+}
+
+.emphasize {
+    background-color: #212121;
+    padding: 10px 20px 6px 20px;
+    opacity: 0.4;
+}
+
+.color_test {
+    color: #5bc0de;
+}
