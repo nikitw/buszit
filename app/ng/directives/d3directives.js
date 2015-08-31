@@ -189,20 +189,34 @@ angular.module('buszit.directives', ['d3'])
 
                         // Plot a location on Map.
                         scope.plotLocation = function (data) {
+
+                            if(Object.prototype.toString.call( data.body.vehicle ) === '[object Object]') {
+                                data.body.vehicle = [data.body.vehicle];
+                            }
+
                             angular.forEach(data.body.vehicle, function(vehicle) {
-                                svg.select('#_vehicle_'+vehicle._id).remove();
+                                var dir;
+                                if(vehicle._dirTag && vehicle._dirTag.indexOf('I') > 2) {
+                                    dir = 'I';
+                                }
+
+                                var id = '_vehicle_' + vehicle._id + '_' + vehicle._routeTag;
+                                svg.select('#' + id).remove();
+                                svg.select('#_label_' + id).remove();
                                 geoService.putMapPoint(
                                     [vehicle._lon, vehicle._lat],
                                     svg,
                                     albersProjection,
-                                    '_vehicle_' + vehicle._id
+                                    id,
+                                    dir,
+                                    vehicle._routeTag
                                 );
                             });
 
                         };
 
                         scope.refreshSvg = function (data) {
-                            geoService.restoreMapPoints(svg, albersProjection);
+                           geoService.restoreMapPoints(svg, albersProjection);
                         };
 
                         /**

@@ -120,16 +120,16 @@ services.factory('geoService',
          * @param projection
          */
         gjs.restoreMapPoints = function (svg, projection) {
-            svg.selectAll(['.mapPoint']).remove();
-
-            angular.forEach(gjs.mapPoints, function(val, key) {
-                gjs.putMapPoint([val.lng, val.lat], svg, projection, key);
-            });
+            svg.selectAll(['.mapPoint', '.mapLabel']).remove();
 
             if(angular.isDefined(gjs.meMapPoint)) {
                 var point = [gjs.meMapPoint.lng, gjs.meMapPoint.lat];
                 plotMapPoint(point, svg, projection, gjs.meMapPoint.type);
             }
+
+            angular.forEach(gjs.mapPoints, function(val, key) {
+                gjs.putMapPoint([val.lng, val.lat], svg, projection, key, val.direction, val.tag);
+            });
         };
 
         /**
@@ -139,8 +139,10 @@ services.factory('geoService',
          * @param svg
          * @param projection
          * @param idx Identifier for the cache. (choose unique)
+         * @param direction I/O Inbound or Outbound
+         * @param tag Point tag text
          */
-        gjs.putMapPoint = function(point, svg, projection, idx) {
+        gjs.putMapPoint = function(point, svg, projection, idx, direction, tag) {
             if(!idx) {
                 idx = function (d) {
                     return d.id;
@@ -153,9 +155,9 @@ services.factory('geoService',
                 oldMapPoint = mapPoint ? [mapPoint.lng, mapPoint.lat] : null;
             }
 
-            gjs.mapPoints[idx] = (new Point(point[1], point[0], idx));
+            gjs.mapPoints[idx] = (new Point(point[1], point[0], idx, direction, tag));
 
-            plotMapPoint(point, svg, projection, idx, oldMapPoint);
+            plotMapPoint(point, svg, projection, idx, oldMapPoint, direction, tag);
         };
 
         /**
@@ -167,8 +169,10 @@ services.factory('geoService',
          * @param projection
          * @param idx Identifier for the cache. (choose unique)
          * @param oldMapPoint Old position of the point.
+         * @param direction I/O Inbound or Outbound
+         * @param tag Point tag text
          */
-        function plotMapPoint(point, svg, projection, idx, oldMapPoint) {
+        function plotMapPoint(point, svg, projection, idx, oldMapPoint, direction, tag) {
 
             if(isNaN(point[0]) || isNaN(point[1])) {
                 return;
@@ -183,9 +187,16 @@ services.factory('geoService',
             var map = d3.select(svg.selectAll('g')[0][numGs - 1]);
 
             var fill = "assets/icons/_ico_bus.png";
+            var noTransition = false;
 
             if (idx == '_ico_cloc') {
                 fill = "assets/icons/_ico_cloc.png";
+                tag = 'me';
+                noTransition = true;
+            } else {
+                if(direction == 'I') {
+                    fill = "assets/icons/_ico_bus_i.png";
+                }
             }
 
             var coordinates = projection(point);
@@ -197,7 +208,24 @@ services.factory('geoService',
                 .attr("id", idx)
                 .attr("class", 'mapPoint');
 
-            if(oldMapPoint) {
+            var labelGroup = map.append('g')
+                .attr('id', '_label_'+idx)
+                .attr('class', 'mapLabel');
+
+            var labelRect = labelGroup.append('rect')
+                .attr('height', 18)
+                .attr('stroke', 'white')
+                .attr('fill', '#4C975C');
+
+            var label = labelGroup.append('text')
+                .attr('fill', 'white')
+                .text(tag);
+
+            var maxTextWidth = label.node().getBBox().width + 2;
+
+            labelRect.attr('width', maxTextWidth);
+
+            if(oldMapPoint && !noTransition) {
                 var oldCoordinates = projection(oldMapPoint);
                 var tpose = [coordinates[0] - oldCoordinates[0], coordinates[1] - oldCoordinates[1]];
 
@@ -208,10 +236,33 @@ services.factory('geoService',
                     .attr('transform', function(d) {
                         return "translate("+tpose[0] + "," + tpose[1] + ")";
                     });
+
+                labelRect
+                    .attr('x', oldCoordinates[0] - 10)
+                    .attr('y', oldCoordinates[1] - 48)
+                    .transition().duration(15000)
+                    .attr('transform', function(d) {
+                        return "translate("+tpose[0] + "," + tpose[1] + ")";
+                    });
+
+                label
+                    .attr('x', oldCoordinates[0] - 10)
+                    .attr('y', oldCoordinates[1] - 32)
+                    .transition().duration(15000)
+                    .attr('transform', function(d) {
+                        return "translate("+tpose[0] + "," + tpose[1] + ")";
+                    });
+
             } else {
                 image
                     .attr('x', coordinates[0] - 15) // reposition to center - x
                     .attr('y', coordinates[1] - 32); // reposition to center - y
+                labelRect
+                    .attr('x', coordinates[0] - 10)
+                    .attr('y', coordinates[1] - 48);
+                label
+                    .attr('x', coordinates[0] - 10)
+                    .attr('y', coordinates[1] - 32);
             }
         }
 
@@ -561,10 +612,13 @@ services.factory('nextBusService',
  * @param lat Latitude
  * @param lng Longitude
  * @param type bus/cloc
+ * @param direction I/O Inbound or Outbound
  * @constructor
  */
-var Point = function (lat, lng, type) {
+var Point = function (lat, lng, type, direction, tag) {
     this.lat = lat;
     this.lng = lng;
     this.type = type;
+    this.direction = direction;
+    this.tag = tag;
 };
