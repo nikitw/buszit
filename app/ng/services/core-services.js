@@ -232,7 +232,7 @@ services.factory('geoService',
                 image
                     .attr('x', oldCoordinates[0] - 15) // reposition to center - x
                     .attr('y', oldCoordinates[1] - 32) // reposition to center - y
-                    .transition().duration(15000)
+                    .transition().duration(8000)
                     .attr('transform', function(d) {
                         return "translate("+tpose[0] + "," + tpose[1] + ")";
                     });
@@ -240,7 +240,7 @@ services.factory('geoService',
                 labelRect
                     .attr('x', oldCoordinates[0] - 10)
                     .attr('y', oldCoordinates[1] - 48)
-                    .transition().duration(15000)
+                    .transition().duration(8000)
                     .attr('transform', function(d) {
                         return "translate("+tpose[0] + "," + tpose[1] + ")";
                     });
@@ -248,7 +248,7 @@ services.factory('geoService',
                 label
                     .attr('x', oldCoordinates[0] - 10)
                     .attr('y', oldCoordinates[1] - 32)
-                    .transition().duration(15000)
+                    .transition().duration(8000)
                     .attr('transform', function(d) {
                         return "translate("+tpose[0] + "," + tpose[1] + ")";
                     });
